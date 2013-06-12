@@ -1,7 +1,7 @@
 #include "ctlkinect.h"
 
 // setting file place
-#define CONFIG_PATH "./Config.xml"
+#define CONFIG_PATH "../xtionConfig.xml"
 
 using namespace xn;
 
@@ -27,7 +27,7 @@ CtlKinect::CtlKinect()
 
     XnMapOutputMode mapMode;
 
-    g_depth.GetMapOutputMode(mapMode);
+    rc = g_depth.GetMapOutputMode(mapMode);
     if (rc != XN_STATUS_OK)
         emit errorOccurred(2);
 

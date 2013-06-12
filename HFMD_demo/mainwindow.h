@@ -8,9 +8,10 @@
 #include <QAction>
 
 #include "ctlkinect.h"
-#include "CRForest.h"
+#include "./source/CRForest.h"
 #include "dialog.h"
 #include "settingdialog.h"
+#include "./source/CDataset.h"
 
 #include <boost/timer.hpp>
 
@@ -27,7 +28,7 @@ public:
     ~MainWindow();//    ui->label->setPixmap(QPixmap::fromImage(m_rgb));
     //    ui->label_2->setPixmap(QPixmap::fromImage(m_depth));
     //    ui->label->show();
-    //    ui->label_2->show();
+    //    ui->label_2->show();gotImage
 
 public slots:
     void getData(cv::Mat*, cv::Mat*);
@@ -36,7 +37,7 @@ public slots:
     void showResult(std::vector<detectionResult*>);
 
     void keiyuUkeru(QString);
-    
+
 private:
     Ui::MainWindow *ui;
     CtlKinect m_kinect;
@@ -58,7 +59,7 @@ private:
 
 signals:
     void startSensing();
-    void gotImage(cv::Mat*,cv::Mat*);
+    void gotImage(CTestDataset);//cv::Mat*,cv::Mat*);
     void keiyuOkuru(QString);
 };
 

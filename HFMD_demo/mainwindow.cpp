@@ -21,12 +21,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //load forest file
     conf = new CConfig;
     conf->loadConfig("config.xml");
-    forest = new CRForest(conf);
+    forest = new CRForest(*conf);
     settingD->setConfig(conf);
 
-
     connect(forest,SIGNAL(sendClassNames(QStringList)),&dialog,SLOT(receiveClassNames(QStringList)));
-
     forest->loadForest();
 
 
@@ -98,7 +96,11 @@ void MainWindow::getData(cv::Mat *rgb, cv::Mat *depth){
     inputImage.push_back(p_rgb);
     inputImage.push_back(p_depth);
 
-    emit gotImage(rgb,depth);
+    CTestDataset receiveImages;
+    receiveImages.img.push_back(rgb);
+    receiveImages.img.push_back(depth);
+
+    emit gotImage(receiveImages);
 
 //    std::vector<detectionResult> result;
 //    result = forest->detection(inputImage);
