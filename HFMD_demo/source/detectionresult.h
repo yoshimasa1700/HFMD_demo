@@ -7,7 +7,8 @@
 class detectionResult
 {
 public:
-    detectionResult();
+    detectionResult(){}
+    virtual ~detectionResult(){}
     std::string className;
     cv::Rect bbox;
 };

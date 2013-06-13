@@ -10,17 +10,16 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<cv::vector<cv::Mat*> >("cv::vector<cv::Mat*>");
     qRegisterMetaType<std::vector<detectionResult*> >("std::vector<detectionResult*>");
     qRegisterMetaType<CConfig>("CConfig");
-
+    qRegisterMetaType<CTestDataset>("CTestDataset");
 
     ui->setupUi(this);
-
 
     settingD = new settingDialog(this);
     connect(ui->actionSetting_Window,SIGNAL(triggered()),settingD,SLOT(show()));
 
     //load forest file
     conf = new CConfig;
-    conf->loadConfig("config.xml");
+    conf->loadConfig("../hfConfig.xml");
     forest = new CRForest(*conf);
     settingD->setConfig(conf);
 
@@ -46,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&m_kinect, SIGNAL(errorOccurred(int)),
             this,SLOT(errorMsg(int)));
 
-    connect(this,SIGNAL(gotImage(cv::Mat*,cv::Mat*)),forest,SLOT(detection(cv::Mat*,cv::Mat*)));
+    connect(this,SIGNAL(gotImage(CTestDataset)),forest,SLOT(detection(CTestDataset)));
     connect(forest,SIGNAL(detectedResult(std::vector<detectionResult*>)),this,SLOT(showResult(std::vector<detectionResult*>)));
 
     connect(ui->actionView_vote_image,SIGNAL(triggered()),&dialog,SLOT(show()));
@@ -85,7 +84,10 @@ void MainWindow::getData(cv::Mat *rgb, cv::Mat *depth){
     p_rgb = rgb;
     p_depth = depth;
 
-
+    cv::Mat *rgbTemp = new cv::Mat(rgb->rows, rgb->cols, rgb->type());
+    rgb->copyTo(*rgbTemp);
+    cv::Mat *depthTemp = new cv::Mat(depth->rows, depth->cols, depth->type());
+    depth->copyTo(*depthTemp);
 
     //qDebug() << tr("%1").arg(p_depth->type());
     //qDebug() << tr("CV_16U is %1").arg(CV_16U);
@@ -97,8 +99,8 @@ void MainWindow::getData(cv::Mat *rgb, cv::Mat *depth){
     inputImage.push_back(p_depth);
 
     CTestDataset receiveImages;
-    receiveImages.img.push_back(rgb);
-    receiveImages.img.push_back(depth);
+    receiveImages.img.push_back(rgbTemp);
+    receiveImages.img.push_back(depthTemp);
 
     emit gotImage(receiveImages);
 

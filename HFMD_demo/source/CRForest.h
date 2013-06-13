@@ -10,7 +10,7 @@
 #include "./source/HoG.h"
 #include "./source/CDataset.h"
 
-#include "detectionresult.h"
+#include "./source/detectionresult.h"
 
 static HoG hog;
 
@@ -69,9 +69,9 @@ class CRForest : public QObject{
   CClassDatabase classDatabase;
 
 public slots:
-  void detection(CTestDataset &testSet) const;//void detection( cv::Mat* rgb, cv::Mat* depth);//, std::vector<double> &detectionResult, int &detectClass) const;
+  void detection(CTestDataset testSet) const;//void detection( cv::Mat* rgb, cv::Mat* depth);//, std::vector<double> &detectionResult, int &detectClass) const;
   void recieveWhatDialogWantToShow(QString);
-  void receiveConfig(CConfig *);
+  void receiveConfig(CConfig);
 
 signals:
   void detectedResult(std::vector<detectionResult*>) const;

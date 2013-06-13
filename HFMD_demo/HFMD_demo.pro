@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = HFMD_demo
 TEMPLATE = app
 
-INCLUDEPATH += /usr/include/libusb-1.0 /usr/include/openni
+INCLUDEPATH += /usr/include/libusb-1.0 /usr/include/openni /usr/include/ni
 LIBS += -L/usr/lib -lOpenNI -lusb-1.0  -lboost_system -lboost_date_time -lboost_thread
 
 

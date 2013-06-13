@@ -81,23 +81,23 @@ int CDataset::loadImage(double mindist, double maxdist){
 
     //std::cout << rgb << " " << depth << std::endl;
 
-    rgbImg = new cv::Mat;
-    *rgbImg = cv::imread(rgb,3).clone();
-    if(rgbImg->empty()){
-        std::cout << "error! rgb image file " << rgb << " not found!" << std::endl;
-        return -1;
-    }
-    depthImg = new cv::Mat;
-    *depthImg = cv::imread(depth, CV_LOAD_IMAGE_ANYDEPTH).clone();
-    if(depthImg->empty()){
-        std::cout << "error! depth image file " << depth << " not found!" << std::endl;
-        return -1;
-    }
+//    rgbImg = new cv::Mat;
+//    *rgbImg = cv::imread(rgb,3).clone();
+//    if(rgbImg->empty()){
+//        std::cout << "error! rgb image file " << rgb << " not found!" << std::endl;
+//        return -1;
+//    }
+//    depthImg = new cv::Mat;
+//    *depthImg = cv::imread(depth, CV_LOAD_IMAGE_ANYDEPTH).clone();
+//    if(depthImg->empty()){
+//        std::cout << "error! depth image file " << depth << " not found!" << std::endl;
+//        return -1;
+//    }
 
-    cropImageAndDepth(rgbImg, depthImg, mindist, maxdist);
+    cropImageAndDepth(img.at(0), img.at(1), mindist, maxdist);
 
-    img.push_back(rgbImg);
-    img.push_back(depthImg);
+//    img.push_back(rgbImg);
+//    img.push_back(depthImg);
 
     imgFlag  = 1;
 

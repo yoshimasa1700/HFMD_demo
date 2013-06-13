@@ -1,6 +1,7 @@
 #include <boost/timer.hpp>
 #include "./source/CRForest.h"
 
+
 void CRForest::learning(){
     // grow each tree
     // if you want to fix this program multi thread
@@ -130,7 +131,7 @@ void CRForest::loadForest(){
 // name   : detect function
 // input  : image and dataset
 // output : classification result and detect picture
-void CRForest::detection(CTestDataset &testSet) const{
+void CRForest::detection(CTestDataset testSet) const{
     int classNum = classDatabase.vNode.size();//contain class number
     std::vector<CTestPatch> testPatch;
     std::vector<const LeafNode*> result;
@@ -283,32 +284,32 @@ void CRForest::detection(CTestDataset &testSet) const{
     std::cout << 1 / (time / classNum) << "Hz" << std::endl;
 
     //create result directory
-    std::string opath(testSet.getRgbImagePath());
-    opath.erase(opath.find_last_of(PATH_SEP));
-    std::string imageFilename = testSet.getRgbImagePath();
-    imageFilename.erase(imageFilename.find_last_of("."));
-    //imageFilename.erase(imageFilename.begin(),imageFilename.find_last_of(PATH_SEP));
-    imageFilename = imageFilename.substr(imageFilename.rfind(PATH_SEP),imageFilename.length());
+//    std::string opath(testSet.getRgbImagePath());
+//    opath.erase(opath.find_last_of(PATH_SEP));
+//    std::string imageFilename = testSet.getRgbImagePath();
+//    imageFilename.erase(imageFilename.find_last_of("."));
+//    //imageFilename.erase(imageFilename.begin(),imageFilename.find_last_of(PATH_SEP));
+//    imageFilename = imageFilename.substr(imageFilename.rfind(PATH_SEP),imageFilename.length());
 
-    //opath += PATH_SEP;
-    opath += imageFilename;
-    std::string execstr = "mkdir ";
-    execstr += opath;
-    system( execstr.c_str() );
+//    //opath += PATH_SEP;
+//    opath += imageFilename;
+//    std::string execstr = "mkdir ";
+//    execstr += opath;
+//    system( execstr.c_str() );
 
-    for(int c = 0; c < classNum; ++c){
-        std::stringstream cToString;
-        cToString << c;
-        std::string outputName = "output" + cToString.str() + ".png";
-        std::string outputName2 = opath + PATH_SEP + "vote_" + classDatabase.vNode.at(c).name + ".png";
-        //cv::imwrite(outputName.c_str(),outputImage.at(c));
-        //cv::cvtColor(outputImageColorOnly)
+//    for(int c = 0; c < classNum; ++c){
+//        std::stringstream cToString;
+//        cToString << c;
+//        std::string outputName = "output" + cToString.str() + ".png";
+//        std::string outputName2 = opath + PATH_SEP + "vote_" + classDatabase.vNode.at(c).name + ".png";
+//        //cv::imwrite(outputName.c_str(),outputImage.at(c));
+//        //cv::cvtColor(outputImageColorOnly)
 
-        cv::Mat writeImage;
-        //hist.convertTo(hist, hist.type(), 200 * 1.0/second_val,0);
-        outputImageColorOnly.at(c).convertTo(writeImage, CV_8UC1, 254);
-        cv::imwrite(outputName2.c_str(),writeImage);
-    }
+//        cv::Mat writeImage;
+//        //hist.convertTo(hist, hist.type(), 200 * 1.0/second_val,0);
+//        outputImageColorOnly.at(c).convertTo(writeImage, CV_8UC1, 254);
+//        cv::imwrite(outputName2.c_str(),writeImage);
+//    }
 
     std::cout << "detection result outputed" << std::endl;
 
@@ -362,11 +363,26 @@ void CRForest::detection(CTestDataset &testSet) const{
             }
         }
 
+        if(outputImageColorOnly.at(c).at<float>(maxLoc.y, maxLoc.x) > conf.detectThreshold){
+            cv::Size tempSize = classDatabase.vNode.at(c).classSize;
+            cv::Rect_<int> outRect(maxLoc.x - tempSize.width / 2,maxLoc.y - tempSize.height / 2 , tempSize.width,tempSize.height);
+
+
+
+            detectionResult *tempResult = new detectionResult;
+            tempResult->bbox = outRect;
+            tempResult->className = classDatabase.vNode.at(c).name;
+
+            dResult.push_back(tempResult);
+
+
+        }
+
         std::cout << c << "\tName : " << classDatabase.vNode.at(c).name << "\tvote : " << totalVote.at(c) << "\tScore : " << outputImageColorOnly.at(c).at<float>(maxLoc.y, maxLoc.x) << "\tCenterPoint : " << maxLoc << std::endl;//"\tscore : " << score << std::endl;
 
-        std::string outputName = opath + PATH_SEP + "detectionResult" + "_" + classDatabase.vNode.at(c).name + ".png";
+        //std::string outputName = opath + PATH_SEP + "detectionResult" + "_" + classDatabase.vNode.at(c).name + ".png";
 
-        cv::imwrite(outputName.c_str(),outputImage.at(c));
+        //cv::imwrite(outputName.c_str(),outputImage.at(c));
     }
 
     emit detectedResult(dResult);
@@ -395,8 +411,8 @@ void CRForest::recieveWhatDialogWantToShow(QString showClass){
 
 }
 
-void CRForest::receiveConfig(CConfig *tempConf){
-    conf = *tempConf;
+void CRForest::receiveConfig(CConfig tempConf){
+    conf = tempConf;
     std::cout << "receive config" << std::endl;
 }
 
