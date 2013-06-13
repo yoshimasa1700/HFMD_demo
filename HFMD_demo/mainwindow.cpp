@@ -81,13 +81,16 @@ MainWindow::~MainWindow()
 void MainWindow::getData(cv::Mat *rgb, cv::Mat *depth){
     //qDebug() << tr("receive data!");
 
+//    cv::Mat *rgbTemp = new cv::Mat(rgb->rows, rgb->cols, rgb->type());
+//    rgb->copyTo(*rgbTemp);
+//    cv::Mat *depthTemp = new cv::Mat(depth->rows, depth->cols, depth->type());
+//    depth->copyTo(*depthTemp);
+
+//    delete rgb;
+//    delete depth;
+
     p_rgb = rgb;
     p_depth = depth;
-
-    cv::Mat *rgbTemp = new cv::Mat(rgb->rows, rgb->cols, rgb->type());
-    rgb->copyTo(*rgbTemp);
-    cv::Mat *depthTemp = new cv::Mat(depth->rows, depth->cols, depth->type());
-    depth->copyTo(*depthTemp);
 
     //qDebug() << tr("%1").arg(p_depth->type());
     //qDebug() << tr("CV_16U is %1").arg(CV_16U);
@@ -99,8 +102,8 @@ void MainWindow::getData(cv::Mat *rgb, cv::Mat *depth){
     inputImage.push_back(p_depth);
 
     CTestDataset receiveImages;
-    receiveImages.img.push_back(rgbTemp);
-    receiveImages.img.push_back(depthTemp);
+    receiveImages.img.push_back(rgb);
+    receiveImages.img.push_back(depth);
 
     emit gotImage(receiveImages);
 
@@ -161,7 +164,7 @@ void MainWindow::showResult(std::vector<detectionResult*> result){
     cv::cvtColor(depthForDisp,depthForDisp,CV_GRAY2BGR);
     //cv::cvtColor(depthForDisp,depthForDisp,CV_GRAY2RGB);
     //depthForDisp.convertTo(depthForDisp,CV_8UC1);
-    depthForDisp.convertTo( depthForDisp, CV_8UC3, 255.0 / 10000 );
+    depthForDisp.convertTo( depthForDisp, CV_8UC3, 255.0 / 1000 );
     //cv::convertScaleAbs(depthForDisp,depthForDisp2);
 
     cv::resize(depthForDisp,depthForDisp2,cv::Size(),0.5,0.5);

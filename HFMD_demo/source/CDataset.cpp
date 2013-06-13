@@ -94,10 +94,20 @@ int CDataset::loadImage(double mindist, double maxdist){
 //        return -1;
 //    }
 
+    rgbImg = new cv::Mat(img.at(0)->rows, img.at(0)->cols, img.at(0)->type());
+    img.at(0)->copyTo(*rgbImg);
+    depthImg = new cv::Mat(img.at(0)->rows, img.at(0)->cols, img.at(1)->type());
+    img.at(1)->copyTo(*depthImg);
+    //img.at(0)->clone();
+    //*depthImg = img.at(1)->clone();
+
+
+    img.clear();
+    img.push_back(rgbImg);
+    img.push_back(depthImg);
+
     cropImageAndDepth(img.at(0), img.at(1), mindist, maxdist);
 
-//    img.push_back(rgbImg);
-//    img.push_back(depthImg);
 
     imgFlag  = 1;
 
@@ -126,6 +136,9 @@ int CParamset::showParam(){
 }
 
 int CDataset::extractFeatures(){
+    boost::timer t;
+    t.restart();
+
     feature.clear();
     feature.resize(32);
     for(int i = 0; i < 32; ++i)
@@ -197,13 +210,22 @@ int CDataset::extractFeatures(){
   //      cv::destroyWindow("test");
   //  }
 
+    std::cout << t.elapsed() << " sec" << std::endl;
+
+    // -0.9
+
     for(int c = 0; c < 16; ++c)
       maxFilter(feature[c], feature[c], 5);
+
+
+
+    // -0
 
     cv::Mat *tempDepth = new cv::Mat(img.at(1)->clone());
     feature.push_back(tempDepth);
 
     featureFlag = 1;
+    // -0
 
     return 0;
 }

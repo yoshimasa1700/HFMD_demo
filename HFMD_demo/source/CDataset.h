@@ -5,6 +5,7 @@
 #include "HoG.h"
 #include <iostream>
 #include <sstream>
+#include <boost/timer.hpp>
 
 //#include "util.h"
 

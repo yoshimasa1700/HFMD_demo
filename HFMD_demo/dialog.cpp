@@ -22,16 +22,23 @@ void Dialog::receiveClassNames(QStringList classNameList){
 void Dialog::receiveShowImage(cv::vector<cv::Mat*> receiveImage){
     qDebug() << "show! hey!";
     cv::Mat temp = receiveImage.at(ui->comboBox->currentIndex())->clone();
-    cv::Mat tempImage(ui->label->height(),ui->label->width(),temp.type());
-    cv::resize(temp,tempImage,cv::Size(),
-               0.5,//(double)((double)temp.rows / (double)ui->label->width()),
-               0.5);//(double)((double)temp.cols / (double)ui->label->height()));
+    if(!temp.empty()){
+        cv::Mat tempImage(ui->label->height(),ui->label->width(),temp.type());
+        cv::resize(temp,tempImage,cv::Size(),
+                   0.5,//(double)((double)temp.rows / (double)ui->label->width()),
+                  0.5);//(double)((double)temp.cols / (double)ui->label->height()));
 
-    cv::cvtColor(tempImage,tempImage,CV_GRAY2BGR);
-    showImage = QImage(tempImage.data,tempImage.cols,tempImage.rows, QImage::Format_RGB888);
+        cv::cvtColor(tempImage,tempImage,CV_GRAY2BGR);
 
-    ui->label->setPixmap((QPixmap::fromImage(showImage)));
-    ui->label->show();
+        cv::Mat showMat = cv::Mat(tempImage.rows, tempImage.cols, CV_8UC3);
+        tempImage.convertTo(showMat,CV_8U,200.0);
+        cv::imwrite("../test.png",temp * 200);
+        showImage = QImage(showMat.data,tempImage.cols,tempImage.rows, QImage::Format_RGB888);
+
+        ui->label->setPixmap((QPixmap::fromImage(showImage)));
+        ui->label->show();
+    }else
+        qDebug() << "image is empty!!";
 //    cv::Mat rgbForDisp = p_rgb->clone();
 //    cv::Mat depthForDisp = p_depth->clone();
 

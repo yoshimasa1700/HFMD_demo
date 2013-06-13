@@ -76,7 +76,7 @@ public slots:
 signals:
   void detectedResult(std::vector<detectionResult*>) const;
   void sendClassNames(QStringList);
-  void sendVoteImage(cv::vector<cv::Mat*>);
+  void sendVoteImage(cv::vector<cv::Mat*>) const;
 
   void checkWhatIShouldShow(int *);
 

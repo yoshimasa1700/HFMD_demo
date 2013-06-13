@@ -147,6 +147,10 @@ void CRForest::detection(CTestDataset testSet) const{
     testSet.extractFeatures();
     //testSet.releaseImage();
 
+    double time = t.elapsed();
+    std::cout << time << "sec" << std::endl;
+    std::cout << 1 / (double)time << "Hz" << std::endl;
+
     for(int i = 0; i < classNum; ++i){
         outputImage.at(i) = testSet.img.at(0)->clone();
         outputImageColorOnly.at(i) = cv::Mat::zeros(testSet.img.at(0)->rows,testSet.img.at(0)->cols,CV_32FC1);
@@ -198,6 +202,7 @@ void CRForest::detection(CTestDataset testSet) const{
     // vote end
 
 
+
     // find balance by mean shift
     for(int i = 0; i < classNum; ++i){
         //        cv::Mat hsv,hue,rgb;
@@ -236,7 +241,11 @@ void CRForest::detection(CTestDataset testSet) const{
         //        cv::minMaxLoc(hist, 0, &second_val);
 
         //        hist.at<float>(0) = max_val;
-
+//        cv::vector<cv::Mat*> voteImages(0);
+//        for(int d = 0; d < classNum; ++d){
+//            voteImages.push_back(&(outputImageColorOnly.at(d)));
+//        }
+//        emit sendVoteImage(voteImages);
         //        // (4)scale and draw the histogram(s)
         //        cv::Scalar color = cv::Scalar::all(100);
         //        //for(int i=0; i<sch; i++) {
@@ -279,9 +288,7 @@ void CRForest::detection(CTestDataset testSet) const{
 
     }
 
-    double time = t.elapsed();
-    std::cout << time << "sec" << std::endl;
-    std::cout << 1 / (time / classNum) << "Hz" << std::endl;
+
 
     //create result directory
 //    std::string opath(testSet.getRgbImagePath());
@@ -310,6 +317,12 @@ void CRForest::detection(CTestDataset testSet) const{
 //        outputImageColorOnly.at(c).convertTo(writeImage, CV_8UC1, 254);
 //        cv::imwrite(outputName2.c_str(),writeImage);
 //    }
+
+    cv::vector<cv::Mat*> voteImages(0);
+    for(int d = 0; d < classNum; ++d){
+        voteImages.push_back(&(outputImageColorOnly.at(d)));
+    }
+    emit sendVoteImage(voteImages);
 
     std::cout << "detection result outputed" << std::endl;
 
@@ -363,7 +376,8 @@ void CRForest::detection(CTestDataset testSet) const{
             }
         }
 
-        if(outputImageColorOnly.at(c).at<float>(maxLoc.y, maxLoc.x) > conf.detectThreshold){
+        //if(outputImageColorOnly.at(c).at<float>(maxLoc.y, maxLoc.x) > 1.0){
+        {
             cv::Size tempSize = classDatabase.vNode.at(c).classSize;
             cv::Rect_<int> outRect(maxLoc.x - tempSize.width / 2,maxLoc.y - tempSize.height / 2 , tempSize.width,tempSize.height);
 

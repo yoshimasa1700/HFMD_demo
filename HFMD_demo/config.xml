@@ -20,7 +20,7 @@
   </scales>
   <!-- Ratios -->
 
-
+conf.detectThreshold
   <ratio>
     <r1>1</r1>
     <r2>1</r2>
@@ -44,7 +44,7 @@
   <!-- extract patch ratio-->
   <patchratio>1000</patchratio>
   <!-- Stride -->
-  <stride>5</stride>
+  <stride>10</stride>
   <!-- Offset of tree-->
   <offTree>0</offTree>
   <!-- test data path -->
